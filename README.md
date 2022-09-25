@@ -58,4 +58,4 @@ func main() {
 Distributed under the MIT License. See [license](LICENSE) for more information.
 
 ## Contributing <a id="contributing"></a>
-Contributions are welcome! Feel free to check our [open issues](https://github.com/panapol-p/gate/issues).
+Contributions are welcome! Feel free to check our [open issues](https://github.com/panapol-p/go-slice-struct-listener/issues).
