@@ -7,35 +7,40 @@ import (
 )
 
 type Listener[T any] struct {
-	CurrentValue  map[string]string
-	NewValue      map[string]string
-	EventCallback func([]Events)
-	CurrentEvent  []Events
+	CurrentValue  map[string]Value[T]
+	NewValue      map[string]Value[T]
+	EventCallback func([]Events[T])
+	CurrentEvent  []Events[T]
 	mu            sync.Mutex
 }
 
 type EventState string
 
 type DataStruct interface{}
+type Value[T any] struct {
+	Hash string
+	Data T
+}
 
 var EventStateAdded EventState = "added"
 var EventStateUpdated EventState = "updated"
 var EventStateDeleted EventState = "deleted"
 
-type Events struct {
-	State EventState
+type Events[T any] struct {
 	ID    string
+	State EventState
+	Data  T
 }
 
 func NewListener[T any]() *Listener[T] {
 	return &Listener[T]{}
 }
 
-func (l *Listener[T]) SetCallback(f func([]Events)) {
+func (l *Listener[T]) SetCallback(f func([]Events[T])) {
 	l.EventCallback = f
 }
 
-func (l *Listener[T]) AddNewValue(a []T) []Events {
+func (l *Listener[T]) AddNewValue(a []T) []Events[T] {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
@@ -43,8 +48,8 @@ func (l *Listener[T]) AddNewValue(a []T) []Events {
 	return l.compareMap()
 }
 
-func (l *Listener[T]) convertToMap(s []T) map[string]string {
-	m := make(map[string]string)
+func (l *Listener[T]) convertToMap(s []T) map[string]Value[T] {
+	m := make(map[string]Value[T])
 
 	var uniqueField []string
 	for ii := range s {
@@ -68,31 +73,36 @@ func (l *Listener[T]) convertToMap(s []T) map[string]string {
 		}
 
 		b, _ := json.Marshal(s[ii])
-		m[uniqueID] = string(b)
+		m[uniqueID] = Value[T]{
+			Hash: string(b),
+			Data: s[ii],
+		}
 	}
 	return m
 }
 
-func (l *Listener[T]) compareMap() []Events {
-	var es []Events
+func (l *Listener[T]) compareMap() []Events[T] {
+	var es []Events[T]
 
 	for key := range l.NewValue {
-		var e Events
+		var e Events[T]
 		if value, ok := l.CurrentValue[key]; ok {
-			if value != l.NewValue[key] {
+			if value.Hash != l.NewValue[key].Hash {
 				e.ID = key
 				e.State = EventStateUpdated
+				e.Data = l.NewValue[key].Data
 				es = append(es, e)
 			}
 		} else {
 			e.ID = key
 			e.State = EventStateAdded
+			e.Data = l.NewValue[key].Data
 			es = append(es, e)
 		}
 	}
 
 	for key := range l.CurrentValue {
-		var e Events
+		var e Events[T]
 		if _, ok := l.NewValue[key]; !ok {
 			e.ID = key
 			e.State = EventStateDeleted

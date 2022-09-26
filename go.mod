@@ -1,4 +1,4 @@
-module go-slice-struct-listener
+module github.com/panapol-p/go-slice-struct-listener
 
 go 1.19
 
