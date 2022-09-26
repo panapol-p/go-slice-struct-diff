@@ -3,6 +3,7 @@ package listener
 import (
 	"encoding/json"
 	"reflect"
+	"sort"
 	"sync"
 )
 
@@ -82,6 +83,9 @@ func (l *Listener[T]) convertToMap(s []T) map[string]Value[T] {
 }
 
 func (l *Listener[T]) compareMap() []Events[T] {
+	//clear CurrentEvent
+	l.CurrentEvent = []Events[T]{}
+
 	var es []Events[T]
 
 	for key := range l.NewValue {
@@ -110,10 +114,17 @@ func (l *Listener[T]) compareMap() []Events[T] {
 		}
 	}
 
+	sort.Slice(es, func(i, j int) bool {
+		return es[i].ID < es[j].ID
+	})
+
 	if l.EventCallback != nil {
-		l.EventCallback(es)
+		if len(es) > 0 {
+			l.EventCallback(es)
+		}
 	}
 
 	l.CurrentValue = l.NewValue
+	l.CurrentEvent = es
 	return es
 }

@@ -87,10 +87,25 @@ func TestListener_compareMap(t *testing.T) {
 	}
 	assert.Equal(t, expected, e)
 
-	// test compare with callback
+	// test compare with callback (no even data)
 	f := func(e []Events[S]) {}
 	l.SetCallback(f)
 	e = l.compareMap()
 	//no change event
 	assert.Nil(t, e)
+
+	// test compare with callback (have even data)
+	s := []S{
+		{F0: "1", F1: "test2", F2: ""},
+		{F0: "2", F1: "test2", F2: ""},
+	}
+	l.AddNewValue(s)
+	expected = []Events[S]{
+		{State: EventStateUpdated, ID: "1", Data: S{F0: "1", F1: "test2", F2: ""}},
+		{State: EventStateUpdated, ID: "2", Data: S{F0: "2", F1: "test2", F2: ""}},
+		{State: EventStateDeleted, ID: "3", Data: S{}},
+		{State: EventStateDeleted, ID: "4", Data: S{}},
+	}
+
+	assert.Equal(t, expected, l.CurrentEvent)
 }
