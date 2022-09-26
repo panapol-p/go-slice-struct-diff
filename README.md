@@ -12,7 +12,7 @@ package main
 import (
 	"fmt"
 
-	listener "go-slice-struct-listener"
+	listener "github.com/panapol-p/go-slice-struct-listener"
 )
 
 type FeedData struct {
@@ -30,13 +30,13 @@ func main() {
 	l := listener.NewListener[FeedData]()
 
 	// set callback func if you need
-	f := func(e []listener.Events) {
+	f := func(e []listener.Events[FeedData]) {
 		fmt.Println("[callback func]", "receive new event!!", e)
 	}
 	l.SetCallback(f)
 
 	events := l.AddNewValue(fs)
-	fmt.Println(events) // [{added 1} {added 2}]
+	fmt.Println(events) // [{1 added {1 Bob 98.5}} {2 added {2 Joe 92.5}}]
 
 	fs = []FeedData{
 		{ID: "1", Name: "Bob", Score: 96.50},
@@ -44,13 +44,13 @@ func main() {
 		{ID: "3", Name: "Micky", Score: 89.70},
 	}
 	events = l.AddNewValue(fs)
-	fmt.Println(events) // [{updated 1} {added 3}]
+	fmt.Println(events) // [{1 updated {1 Bob 96.5}} {3 added {3 Micky 89.7}}]
 
 	fs = []FeedData{
 		{ID: "1", Name: "Bob", Score: 96.50},
 	}
 	events = l.AddNewValue(fs)
-	fmt.Println(events) // [{deleted 2} {deleted 3}]
+	fmt.Println(events) // [{2 deleted {  0}} {3 deleted {  0}}]
 }
 ```
 
