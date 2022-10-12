@@ -1,4 +1,4 @@
-package listener
+package diff
 
 import (
 	"testing"
@@ -7,25 +7,25 @@ import (
 )
 
 type S struct {
-	F0 string `listener:"id"`
+	F0 string `Diff:"id"`
 	F1 string
 	F2 string
 }
 
-func TestNewListener(t *testing.T) {
-	l := NewListener[S]()
+func TestNewDiff(t *testing.T) {
+	l := NewDiff[S]()
 	assert.NotNil(t, l)
 }
 
-func TestListener_SetCallback(t *testing.T) {
-	l := NewListener[S]()
+func TestDiff_SetCallback(t *testing.T) {
+	l := NewDiff[S]()
 	f := func(e []Events[S]) {}
 	l.SetCallback(f)
 	assert.NotNil(t, l.EventCallback)
 }
 
-func TestListener_AddNewValue(t *testing.T) {
-	l := new(Listener[S])
+func TestDiff_AddNewValue(t *testing.T) {
+	l := new(Diff[S])
 
 	s := []S{
 		{F0: "1", F1: "test2", F2: ""},
@@ -44,8 +44,8 @@ func TestListener_AddNewValue(t *testing.T) {
 	assert.Equal(t, expected, l.NewValue)
 }
 
-func TestListener_convertToMap(t *testing.T) {
-	l := new(Listener[S])
+func TestDiff_convertToMap(t *testing.T) {
+	l := new(Diff[S])
 
 	s := []S{
 		{F0: "1", F1: "test2", F2: ""},
@@ -64,8 +64,8 @@ func TestListener_convertToMap(t *testing.T) {
 	assert.Equal(t, expected, actual)
 }
 
-func TestListener_compareMap(t *testing.T) {
-	l := new(Listener[S])
+func TestDiff_compareMap(t *testing.T) {
+	l := new(Diff[S])
 	l.CurrentValue = map[string]Value[S]{
 		"2": {"{\"F0\":\"2\"}", S{F0: "2"}},
 		"3": {"{\"F0\":\"3\"}", S{F0: "3"}},
