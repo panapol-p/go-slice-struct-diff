@@ -1,4 +1,4 @@
-package listener
+package diff
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-type Listener[T any] struct {
+type Diff[T any] struct {
 	CurrentValue  map[string]Value[T]
 	NewValue      map[string]Value[T]
 	EventCallback func([]Events[T])
@@ -33,15 +33,15 @@ type Events[T any] struct {
 	Data  T
 }
 
-func NewListener[T any]() *Listener[T] {
-	return &Listener[T]{}
+func NewDiff[T any]() *Diff[T] {
+	return &Diff[T]{}
 }
 
-func (l *Listener[T]) SetCallback(f func([]Events[T])) {
+func (l *Diff[T]) SetCallback(f func([]Events[T])) {
 	l.EventCallback = f
 }
 
-func (l *Listener[T]) AddNewValue(a []T) []Events[T] {
+func (l *Diff[T]) AddNewValue(a []T) []Events[T] {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
@@ -49,7 +49,7 @@ func (l *Listener[T]) AddNewValue(a []T) []Events[T] {
 	return l.compareMap()
 }
 
-func (l *Listener[T]) convertToMap(s []T) map[string]Value[T] {
+func (l *Diff[T]) convertToMap(s []T) map[string]Value[T] {
 	m := make(map[string]Value[T])
 
 	var uniqueField []string
@@ -59,8 +59,8 @@ func (l *Listener[T]) convertToMap(s []T) map[string]Value[T] {
 			st := reflect.TypeOf(s[ii])
 			for i := 0; i < st.NumField(); i++ {
 				field := st.Field(i)
-				if listener, ok := field.Tag.Lookup("listener"); ok {
-					if listener == "id" {
+				if Diff, ok := field.Tag.Lookup("Diff"); ok {
+					if Diff == "id" {
 						uniqueField = append(uniqueField, field.Name)
 					}
 				}
@@ -82,7 +82,7 @@ func (l *Listener[T]) convertToMap(s []T) map[string]Value[T] {
 	return m
 }
 
-func (l *Listener[T]) compareMap() []Events[T] {
+func (l *Diff[T]) compareMap() []Events[T] {
 	//clear CurrentEvent
 	l.CurrentEvent = []Events[T]{}
 

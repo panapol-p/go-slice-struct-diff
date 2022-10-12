@@ -1,6 +1,6 @@
 # go-slice-struct-listener
 
-A Go library to listen slice of struct (when feed new data then output show id was added , id was updated or id was deleted)
+A Go library to find diff slice of struct (when feed new data then output show id was added , id was updated or id was deleted)
 <hr>
 
 
@@ -12,11 +12,11 @@ package main
 import (
 	"fmt"
 
-	listener "github.com/panapol-p/go-slice-struct-listener"
+	diff "github.com/panapol-p/go-slice-struct-diff"
 )
 
 type FeedData struct {
-	ID    string `listener:"id"`
+	ID    string `diff:"id"`
 	Name  string
 	Score float32
 }
@@ -27,15 +27,15 @@ func main() {
 		{ID: "2", Name: "Joe", Score: 92.50},
 	}
 
-	l := listener.NewListener[FeedData]()
+	d := diff.NewListener[FeedData]()
 
 	// set callback func if you need
-	f := func(e []listener.Events[FeedData]) {
+	f := func(e []diff.Events[FeedData]) {
 		fmt.Println("[callback func]", "receive new event!!", e)
 	}
-	l.SetCallback(f)
+	d.SetCallback(f)
 
-	events := l.AddNewValue(fs)
+	events := d.AddNewValue(fs)
 	fmt.Println(events) // [{1 added {1 Bob 98.5}} {2 added {2 Joe 92.5}}]
 
 	fs = []FeedData{
@@ -43,13 +43,13 @@ func main() {
 		{ID: "2", Name: "Joe", Score: 92.50},
 		{ID: "3", Name: "Micky", Score: 89.70},
 	}
-	events = l.AddNewValue(fs)
+	events = d.AddNewValue(fs)
 	fmt.Println(events) // [{1 updated {1 Bob 96.5}} {3 added {3 Micky 89.7}}]
 
 	fs = []FeedData{
 		{ID: "1", Name: "Bob", Score: 96.50},
 	}
-	events = l.AddNewValue(fs)
+	events = d.AddNewValue(fs)
 	fmt.Println(events) // [{2 deleted {  0}} {3 deleted {  0}}]
 }
 ```
