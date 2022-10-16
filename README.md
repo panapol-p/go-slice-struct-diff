@@ -27,7 +27,7 @@ func main() {
 		{ID: "2", Name: "Joe", Score: 92.50},
 	}
 
-	d := diff.NewListener[FeedData]()
+	d := diff.NewDiff[FeedData]()
 
 	// set callback func if you need
 	f := func(e []diff.Events[FeedData]) {
@@ -59,3 +59,12 @@ Distributed under the MIT License. See [license](LICENSE) for more information.
 
 ## Contributing <a id="contributing"></a>
 Contributions are welcome! Feel free to check our [open issues](https://github.com/panapol-p/go-slice-struct-listener/issues).
+
+<a href="https://github.com/panapol-p/go-slice-struct-diff/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=panapol-p/go-slice-struct-diff" />
+</a>
+
+<br>
+<div align="center">
+Show some ❤️ by starring this awesome repository!
+</div>
