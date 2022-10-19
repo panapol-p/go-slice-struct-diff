@@ -7,7 +7,7 @@ import (
 )
 
 type S struct {
-	F0 string `Diff:"id"`
+	F0 string `diff:"id"`
 	F1 string
 	F2 string
 }
