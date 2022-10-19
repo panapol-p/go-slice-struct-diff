@@ -59,8 +59,8 @@ func (l *Diff[T]) convertToMap(s []T) map[string]Value[T] {
 			st := reflect.TypeOf(s[ii])
 			for i := 0; i < st.NumField(); i++ {
 				field := st.Field(i)
-				if Diff, ok := field.Tag.Lookup("Diff"); ok {
-					if Diff == "id" {
+				if d, ok := field.Tag.Lookup("diff"); ok {
+					if d == "id" {
 						uniqueField = append(uniqueField, field.Name)
 					}
 				}
