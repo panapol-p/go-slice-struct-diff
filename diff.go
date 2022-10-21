@@ -120,7 +120,7 @@ func (l *Diff[T]) compareMap() []Events[T] {
 
 	if l.EventCallback != nil {
 		if len(es) > 0 {
-			l.EventCallback(es)
+			go l.EventCallback(es)
 		}
 	}
 
