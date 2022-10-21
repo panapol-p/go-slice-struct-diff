@@ -66,7 +66,7 @@ To start contributing, follow the below guidelines:
 2. Clone your forked copy of the project.
 git clone https://github.com/<your_user_name>/go-slice-struct-diff.git
 3. Navigate to the project directory 📁
-cd e-commerce_redstore.github.io
+cd go-slice-struct-diff.git
 4. Add a reference(remote) to the original repository.
 git remote add upstream (https://github.com/panapol-p/go-slice-struct-diff.git)
 5. Check the remotes for this repository.
