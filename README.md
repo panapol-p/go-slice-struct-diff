@@ -1,4 +1,4 @@
-# go-slice-struct-listener
+# go-slice-struct-diff
 
 A Go library to find diff slice of struct (when feed new data then output show id was added , id was updated or id was deleted)
 <hr>
